@@ -18,13 +18,13 @@ class LoginActivity : AppCompatActivity() {
         loginSpinner.visibility = View.INVISIBLE
     }
 
-    fun loginLoginBtnClicked(view: View){
+    fun loginLoginBtnClicked(view: View) {
         enableSpinner(true)
         val email = loginEmailText.text.toString()
         val password = loginPasswordText.text.toString()
         hideKeyboard()
         if (email.isNotEmpty() && password.isNotEmpty()) {
-            AuthService.loginUser(this, email, password) { loginSuccess ->
+            AuthService.loginUser(email, password) { loginSuccess ->
                 if (loginSuccess) {
                     AuthService.findUserByEmail(this) { findSuccess ->
                         if (findSuccess) {
@@ -41,7 +41,6 @@ class LoginActivity : AppCompatActivity() {
         } else {
             Toast.makeText(this, "Please fill in both email and password", Toast.LENGTH_LONG).show()
         }
-
     }
     fun loginCreateUserBtnClicked(view: View){
         val createUserIntent = Intent(this, CreateUserActivity::class.java)
