@@ -10,21 +10,24 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.smack.Model.Channel
 import com.example.smack.R
 import com.example.smack.Services.AuthService
+import com.example.smack.Services.MessageService
 import com.example.smack.Services.UserDataService
 import com.example.smack.Utilities.BROADCAST_USER_DATA_CHANGE
 import com.example.smack.Utilities.SOCKET_URL
 import com.example.smack.databinding.ActivityMainBinding
+import com.google.android.material.navigation.NavigationView
 import io.socket.client.IO
+import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -34,9 +37,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        socket.connect()
+        socket.on("channelCreated", onNewChannel)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -55,14 +60,13 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        
+
 
     }
 
     override fun onResume() {
         LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver,
             IntentFilter(BROADCAST_USER_DATA_CHANGE))
-
         super.onResume()
     }
 
@@ -131,6 +135,18 @@ class MainActivity : AppCompatActivity() {
                 .show()
         }
     }
+    private val onNewChannel = Emitter.Listener { args ->
+            runOnUiThread {
+                val channelName = args[0] as String
+                val channelDescription = args[1] as String
+                val channelId = args[2] as String
+
+                val newChannel = Channel(channelName,channelDescription,channelId)
+                MessageService.channels.add(newChannel)
+            }
+
+    }
+
 
     fun sendMessageBtnClicked(view: View){
         hideKeyboard()
