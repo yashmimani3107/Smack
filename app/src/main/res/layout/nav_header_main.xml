@@ -7,7 +7,9 @@
     android:layout_height="@dimen/nav_header_height"
     android:background="@color/colorPrimary"
     android:gravity="bottom"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
 
     <ImageView
         android:id="@+id/userImageNavHeader"
@@ -43,13 +45,14 @@
 
     <Button
         android:id="@+id/loginbtnNavHeader"
-        android:layout_width="91dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:background="@android:color/transparent"
         android:onClick="loginBtnNavClicked"
         android:text="Login"
         android:textAlignment="textStart"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
